@@ -1,6 +1,5 @@
 package com.revature.service;
 
-import java.util.Base64;
 import java.util.List;
 
 import org.mindrot.jbcrypt.BCrypt;
@@ -10,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import com.revature.dao.UserDAO;
 import com.revature.dao.UserDAOImpl;
 import com.revature.models.User;
+import com.revature.util.EncryptUtil;
 
 public class UserServiceImpl implements UserService {
 
@@ -35,16 +35,17 @@ public class UserServiceImpl implements UserService {
 		}
 
 	}
-	//takes basic auth header and separated it to array [username, password] then checks it against the database
+
+	// takes basic auth header and separated it to array [username, password] then
+	// checks it against the database
 	@Override
 	public boolean logIn(String authHeader) {
-		String encodedCreds = authHeader.substring(6).trim();
-		String[] creds = new String(Base64.getDecoder().decode(encodedCreds)).split(":");
+		String[] creds = EncryptUtil.decrypt(authHeader);
 		User target = dao.getUserByUsername(creds[0]);
 		if (target.getUsername() != null) {
 			logger.info("Attempting to log in with username: " + creds[0]);
 			boolean result = BCrypt.checkpw(creds[1], target.getPassword());
-			logger.debug("And the result is: " + result); 
+			logger.debug("And the result is: " + result);
 			return result;
 
 		}
@@ -63,23 +64,23 @@ public class UserServiceImpl implements UserService {
 		}
 		return false;
 	}
-	
+
 	@Override
-	public List<User> getUsers(){
+	public List<User> getUsers() {
 		logger.info("Listing all users");
 		return dao.getUsers();
 	}
 
 	@Override
 	public User getUserByUsername(String username) {
-		logger.info("Finding user: "+username);
+		logger.info("Finding user: " + username);
 		return dao.getUserByUsername(username);
 
 	}
-	
+
 	@Override
 	public boolean changeRole(String username, int roleId) {
-		logger.info("Attempting to update user: "+ username + " to role: "+ roleId);
+		logger.info("Attempting to update user: " + username + " to role: " + roleId);
 		User user = dao.getUserByUsername(username);
 		user.setRoleId(roleId);
 

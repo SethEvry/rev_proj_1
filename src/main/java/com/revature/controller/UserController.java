@@ -1,7 +1,5 @@
 package com.revature.controller;
 
-import java.util.Base64;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -10,6 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.models.User;
 import com.revature.service.UserService;
 import com.revature.service.UserServiceImpl;
+import com.revature.util.EncryptUtil;
 
 import io.javalin.http.Handler;
 import io.javalin.http.HttpStatus;
@@ -41,26 +40,27 @@ public class UserController {
 			ctx.status(HttpStatus.BAD_REQUEST);
 		}
 	};
-	
+
 	public static Handler handleViewUsers = ctx -> {
+		// get authorization token from cookie
 		String cookie = ctx.cookieStore().get("Auth-Token");
-		byte[] bytes = Base64.getDecoder().decode(cookie.substring(6));
-		String currentUser = new String(bytes).split(":")[0];
-		if(uServ.isManager(currentUser)) {
+		// get username from token
+		String currentUser = EncryptUtil.decrypt(cookie)[0];
+		// check if manager
+		if (uServ.isManager(currentUser)) {
 			ctx.json(uServ.getUsers());
 			ctx.status(HttpStatus.OK);
 		} else {
 			ctx.html("You need to be a manager to view all employees");
 			ctx.status(HttpStatus.UNAUTHORIZED);
 		}
-		
+
 	};
 	public static Handler handleChangeRole = ctx -> {
-		
+
 		String cookie = ctx.cookieStore().get("Auth-Token");
-		byte[] bytes = Base64.getDecoder().decode(cookie);
-		String currentUser = new String(bytes); 
-				
+		String currentUser = EncryptUtil.decrypt(cookie)[0];
+
 		if (uServ.isManager(currentUser)) {
 			String body = ctx.body();
 			ObjectMapper om = new ObjectMapper();
