@@ -41,13 +41,14 @@ public class UserServiceImpl implements UserService {
 		String encodedCreds = authHeader.substring(6).trim();
 		String[] creds = new String(Base64.getDecoder().decode(encodedCreds)).split(":");
 		User target = dao.getUserByUsername(creds[0]);
-		if (target != null) {
+		if (target.getUsername() != null) {
 			logger.info("Attempting to log in with username: " + creds[0]);
 			boolean result = BCrypt.checkpw(creds[1], target.getPassword());
 			logger.debug("And the result is: " + result); 
 			return result;
 
 		}
+		logger.info("User does not exist");
 		return false;
 	}
 
