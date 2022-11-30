@@ -14,7 +14,7 @@ public interface UserService {
 	
 	public User getUserByUsername(String username);
 	
-	public boolean logIn(String username, String password);
+	public boolean logIn(String authHeader);
 	
 	public boolean isManager(String username);
 	

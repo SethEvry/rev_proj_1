@@ -1,5 +1,6 @@
 package com.revature.service;
 
+import java.util.Base64;
 import java.util.List;
 
 import org.mindrot.jbcrypt.BCrypt;
@@ -34,13 +35,15 @@ public class UserServiceImpl implements UserService {
 		}
 
 	}
-
+	//takes basic auth header and separated it to array [username, password] then checks it against the database
 	@Override
-	public boolean logIn(String username, String password) {
-		User target = dao.getUserByUsername(username);
+	public boolean logIn(String authHeader) {
+		String encodedCreds = authHeader.substring(6).trim();
+		String[] creds = new String(Base64.getDecoder().decode(encodedCreds)).split(":");
+		User target = dao.getUserByUsername(creds[0]);
 		if (target != null) {
-			logger.info("Attempting to log in with username: " + username);
-			boolean result = BCrypt.checkpw(password, target.getPassword());
+			logger.info("Attempting to log in with username: " + creds[0]);
+			boolean result = BCrypt.checkpw(creds[1], target.getPassword());
 			logger.debug("And the result is: " + result); 
 			return result;
 

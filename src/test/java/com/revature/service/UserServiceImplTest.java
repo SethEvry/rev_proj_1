@@ -24,8 +24,8 @@ class UserServiceImplTest {
 
 	@Mock
 	private static UserDAO dao;
-
-	private static User user = new User(1, "potato", "potaat123", "Po", "Tato", "po.tato@netscape.net", 1);
+	//unhashed pw: "potaat123"
+	private static User user = new User(1, "potato", "$2a$12$uPe24D9o3Df6sgwbkdwJsO9YqpEsp3Jy8d3yAhyoOPzIQJ7bCf6fC", "Po", "Tato", "po.tato@netscape.net", 1);
 
 	@BeforeEach
 	void init() {
@@ -52,6 +52,7 @@ class UserServiceImplTest {
 
 	@Test
 	void testRegisterUser() {
+		when(dao.getUserByUsername(user.getUsername())).thenReturn(new User());
 		when(dao.createUser(user)).thenReturn(1);
 		boolean result = uServ.registerUser(user);
 		assertTrue(result);
@@ -61,9 +62,10 @@ class UserServiceImplTest {
 
 	@Test
 	void testLogin() {
+		//"Basic cG90YXRvOnBvdGFhdDEyMw=="
 		when(dao.getUserByUsername(user.getUsername())).thenReturn(user);
 
-		assertTrue(uServ.logIn(user.getUsername(), user.getPassword()));
+		assertTrue(uServ.logIn("Basic cG90YXRvOnBvdGFhdDEyMw=="));
 
 	}
 	

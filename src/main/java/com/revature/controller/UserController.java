@@ -44,8 +44,8 @@ public class UserController {
 	
 	public static Handler handleViewUsers = ctx -> {
 		String cookie = ctx.cookieStore().get("Auth-Token");
-		byte[] bytes = Base64.getDecoder().decode(cookie);
-		String currentUser = new String(bytes);
+		byte[] bytes = Base64.getDecoder().decode(cookie.substring(6));
+		String currentUser = new String(bytes).split(":")[0];
 		if(uServ.isManager(currentUser)) {
 			ctx.json(uServ.getUsers());
 			ctx.status(HttpStatus.OK);
