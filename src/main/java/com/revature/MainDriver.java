@@ -18,18 +18,16 @@ public class MainDriver {
 
 		Javalin app = Javalin.create().start(9001);
 
-		app.before((ctx) -> {
-			logger.info("Request at URL " + ctx.url() + " has started.");
-		});
+		app.before(ctx -> logger.info("Request at URL " + ctx.url() + " has started."));
 
 		app.get("/hi", ctx -> {
 			// ctx.html("Hello world!");
 			ctx.status(HttpStatus.OK);
 		});
 		// =======================================================================
-		/**
-		 * handle login
-		 */
+
+		  //handle login
+
 		// ========================================================================
 		// login
 		app.get("/login", LoginController.showLogin);
@@ -39,9 +37,9 @@ public class MainDriver {
 		app.delete("/logout", LoginController.handleLogout);
 
 		// ===========================================================
-		/**
-		 * users
-		 */
+
+		 // users
+
 		// =======================================================================
 		// get
 		app.before("/users", LoginController.authenticate);
@@ -53,9 +51,9 @@ public class MainDriver {
 		app.put("/users/{username}/role", UserController.handleChangeRole);
 
 		// =======================================================================
-		/**
-		 * reimbursement
-		 */
+
+		 // reimbursement
+
 		// =======================================================================
 		// have to be logged in to create/edit tickets
 		app.before("/reimbursements", LoginController.authenticate);
