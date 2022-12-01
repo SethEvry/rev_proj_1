@@ -16,8 +16,8 @@ import com.revature.util.JDBCConnectionUtil;
 import com.revature.util.JDBCPgConnectionUtil;
 
 public class UserDAOImpl implements UserDAO {
-	private JDBCConnectionUtil db;
-	private static Logger logger = LoggerFactory.getLogger(UserDAOImpl.class);
+	private final JDBCConnectionUtil db;
+	private static final Logger logger = LoggerFactory.getLogger(UserDAOImpl.class);
 
 	public UserDAOImpl() {
 		super();
@@ -30,9 +30,9 @@ public class UserDAOImpl implements UserDAO {
 
 	@Override
 	public List<User> getUsers() {
-		try {
+		try(Connection conn = db.getConnection()) {
 			String sql = "SELECT * FROM users;";
-			Connection conn = db.getConnection();
+
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ResultSet rs = ps.executeQuery();
 
@@ -49,17 +49,6 @@ public class UserDAOImpl implements UserDAO {
 				targets.add(target);
 			}
 
-			if (rs != null) {
-				rs.close();
-			}
-			if (ps != null) {
-				ps.close();
-			}
-			if (conn != null) {
-				logger.info("Closing database connection...");
-				conn.close();
-			}
-
 			return targets;
 
 		} catch (SQLException e) {
@@ -70,9 +59,8 @@ public class UserDAOImpl implements UserDAO {
 
 	@Override
 	public int createUser(User user) {
-		try {
+		try(Connection conn = db.getConnection()) {
 			String sql = "INSERT INTO users (username, password, first_name, last_name, email, role_id) Values(?, ?, ?, ?, ? ,?)";
-			Connection conn = db.getConnection();
 
 			PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
@@ -89,16 +77,7 @@ public class UserDAOImpl implements UserDAO {
 			rs.next();
 			int result = rs.getInt("id");
 			logger.info("UserDAOImpl::create() - new user ID is: " + result);
-			if (rs != null) {
-				rs.close();
-			}
-			if (ps != null) {
-				ps.close();
-			}
-			if (conn != null) {
-				logger.info("Closing database connection...");
-				conn.close();
-			}
+
 			return result;
 
 		} catch (SQLException e) {
@@ -110,9 +89,8 @@ public class UserDAOImpl implements UserDAO {
 
 	@Override
 	public User getUserByUsername(String username) {
-		try {
+		try(Connection conn = db.getConnection()) {
 			String sql = "SELECT * FROM users WHERE username = ?";
-			Connection conn = db.getConnection();
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setString(1, username);
 			ResultSet rs = ps.executeQuery();
@@ -132,16 +110,6 @@ public class UserDAOImpl implements UserDAO {
 			} else {
 				logger.info("UserDAOImpl::getUserByUsername() - found no user");
 			}
-			if (rs != null) {
-				rs.close();
-			}
-			if (ps != null) {
-				ps.close();
-			}
-			if (conn != null) {
-				logger.info("Closing database connection...");
-				conn.close();
-			}
 			return target;
 		} catch (SQLException e) {
 			logger.debug(e.getMessage());
@@ -151,10 +119,10 @@ public class UserDAOImpl implements UserDAO {
 
 	@Override
 	public boolean update(User user) {
-		try {
+		try(Connection conn = db.getConnection()) {
 			logger.info("Updating role...");
 			String sql = "UPDATE users SET username = ?, password = ?, first_name = ?, last_name = ?, email = ?, role_id = ? WHERE id = ?";
-			Connection conn = db.getConnection();
+
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setString(1, user.getUsername());
 			ps.setString(2, user.getPassword());
@@ -165,14 +133,6 @@ public class UserDAOImpl implements UserDAO {
 			ps.setInt(7, user.getId());
 
 			ps.executeUpdate();
-
-			if (ps != null) {
-				ps.close();
-			}
-			if (conn != null) {
-				logger.info("Closing database connection...");
-				conn.close();
-			}
 
 			return true;
 

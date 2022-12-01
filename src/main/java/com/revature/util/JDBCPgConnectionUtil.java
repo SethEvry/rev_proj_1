@@ -1,14 +1,12 @@
 package com.revature.util;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+
 public class JDBCPgConnectionUtil implements JDBCConnectionUtil {
-	;
 	public static Logger logger = LoggerFactory.getLogger(JDBCPgConnectionUtil.class);
 
 	public Connection getConnection() {
@@ -21,12 +19,10 @@ public class JDBCPgConnectionUtil implements JDBCConnectionUtil {
 			conn = DriverManager.getConnection(System.getenv("DB_URL"), System.getenv("DB_USERNAME"),
 					System.getenv("DB_PASSWORD"));
 
-		} catch (SQLException e) {
-			e.printStackTrace();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
 		return conn;
-	};
+	}
 }

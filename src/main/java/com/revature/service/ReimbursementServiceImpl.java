@@ -28,7 +28,7 @@ public class ReimbursementServiceImpl implements ReimbursementService {
 
 	@Override
 	public boolean createTicket(Reimbursement re) {
-		return dao.createReimbursement(re) != 0 ? true : false;
+		return dao.createReimbursement(re) != 0;
 	}
 
 	@Override

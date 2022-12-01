@@ -1,12 +1,11 @@
 package com.revature.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class JDBCH2ConnectionUtil implements JDBCConnectionUtil {
 
@@ -53,16 +52,12 @@ public class JDBCH2ConnectionUtil implements JDBCConnectionUtil {
 
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.executeUpdate();
-			if(ps != null) {
-				ps.close();
-			}
+			ps.close();
 
-		} catch (SQLException e) {
-			e.printStackTrace();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
 		return conn;
-	};
+	}
 }

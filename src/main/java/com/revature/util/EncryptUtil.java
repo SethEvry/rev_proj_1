@@ -14,12 +14,11 @@ public class EncryptUtil {
 				.substring(6)
 				.trim();
 		//decode base64 and split username and password.
-		String[] creds = new String(Base64
+
+		return new String(Base64
 				.getDecoder()
 				.decode(encodedCreds))
 				.split(":");
-		
-		return creds;
 	}
 
 }

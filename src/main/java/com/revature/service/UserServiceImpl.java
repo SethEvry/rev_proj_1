@@ -31,7 +31,7 @@ public class UserServiceImpl implements UserService {
 			logger.info("User already exists.");
 			return false;
 		} else {
-			return dao.createUser(user) != 0 ? true : false;
+			return dao.createUser(user) != 0;
 		}
 
 	}
