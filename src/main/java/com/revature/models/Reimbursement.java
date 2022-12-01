@@ -18,9 +18,11 @@ public class Reimbursement {
 
 	public Reimbursement() {
 		super();
+		//set submitted timestamp when created
 		this.submitted = Timestamp.from(Instant.now());
+		
+		//status starts as processing
 		this.statusId = 1;
-		// TODO Auto-generated constructor stub
 	}
 	public Reimbursement(Reimbursement re) {
 		super();

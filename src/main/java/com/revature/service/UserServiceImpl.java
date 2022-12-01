@@ -82,8 +82,12 @@ public class UserServiceImpl implements UserService {
 	public boolean changeRole(String username, int roleId) {
 		logger.info("Attempting to update user: " + username + " to role: " + roleId);
 		User user = dao.getUserByUsername(username);
-		user.setRoleId(roleId);
-
-		return dao.update(user);
+		
+		//makes sure user exists
+		if(user.getUsername() != null && user.getRoleId() != roleId) {
+			user.setRoleId(roleId);
+			return dao.update(user);
+		}
+		return false;
 	}
 }

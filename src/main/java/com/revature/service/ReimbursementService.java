@@ -16,5 +16,7 @@ public interface ReimbursementService {
 	List<Reimbursement> getTickets(Map<String, List<String>> args);
 	List<Reimbursement> getTickets(String username);
 	List<Reimbursement> getTickets(String username, Map<String, List<String>> args);
+	
+	Reimbursement getTicket(int id);
 
 }
